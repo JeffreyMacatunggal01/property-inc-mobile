@@ -51,9 +51,8 @@ const MessageSingleComponent = (props) => {
       }
     }
   }
-
-  console.log(lastSenderData.user_avatars.thumb, "lastSenderData");
-  console.log(item, "lastSenderData");
+ 
+  console.log(item, "item data");
 
   return (
     <AppTouchableOpacity onPress={toThread(item)} style={[styles.item, index === 0 ? { paddingTop: 0 } : {}]}>
@@ -110,7 +109,7 @@ const MessageSingleComponent = (props) => {
               <Text style={[global.itemLightMeta]}>{timeAgo(item.dateUTC)}</Text>
             </View>
             <View style={[global.row]}>
-              {item.isGroupThread && (
+              {item.isGroupThread && lastSenderData?.user_avatars?.thumb && (
                 <Image
                   source={{ uri: lastSenderData.user_avatars.thumb ?? "" }}
                   style={styles.image}
