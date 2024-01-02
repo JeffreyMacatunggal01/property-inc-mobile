@@ -1,12 +1,14 @@
 import React from "react";
 import { NativeModules } from "react-native";
 import MessageSingleComponent from "./MessageSingleComponent";
+import ThreadItemHeader from "./ThreadItemHeader";
 const { RNCustomCode } = NativeModules;
 
 export const applyCustomCode = (externalCodeSetup) => {
-  const { messagesScreenApi, activitiesScreenApi } = externalCodeSetup;
+  const { messagesScreenApi, messagesSingleScreenApi, activitiesScreenApi, navigationApi } = externalCodeSetup;
 
   messagesScreenApi.setMessageSingleComponent((props) => <MessageSingleComponent {...props} />);
+  messagesSingleScreenApi.setThreadItemHeader((props) => <ThreadItemHeader {...props} />);
 
   activitiesScreenApi.setActivityToViewModelFilter((viewModel, activity, depend) => {
     const hrefRegex = /href="([^"]+)"/;
