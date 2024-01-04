@@ -9,6 +9,12 @@ export const applyCustomCode = (externalCodeSetup) => {
 
   messagesScreenApi.setMessageSingleComponent((props) => <MessageSingleComponent {...props} />);
   messagesSingleScreenApi.setThreadItemHeader((props) => <ThreadItemHeader {...props} />);
+  messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
+    /// remove archive  message button
+    buttonConfig.splice(1, 1);
+
+    return [...buttonConfig];
+  });
 
   activitiesScreenApi.setActivityToViewModelFilter((viewModel, activity, depend) => {
     const hrefRegex = /href="([^"]+)"/;
