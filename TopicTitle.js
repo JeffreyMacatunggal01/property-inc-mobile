@@ -3,8 +3,7 @@ import { Text, View, Share } from "react-native";
 import Icon from "@src/components/Icon";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 
-const TopicTitle = (props) => {
-  const { colors, global, topic } = props.data;
+const TopicTitle = ({ colors, global, topic }) => { 
   const { link } = JSON.parse(topic.hash);
 
   const shareUrl = async () => {
