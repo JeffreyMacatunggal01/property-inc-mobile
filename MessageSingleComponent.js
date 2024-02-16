@@ -52,8 +52,12 @@ const MessageSingleComponent = (props) => {
       }
     }
   }
- 
+
   console.log(item, "item data");
+  const { lastMessage } = item 
+  const filesCount = lastMessage?.meta?.files?.length;
+  const messageFiles = `Added ${filesCount} attachment`
+  const message = item.excerpt ? item.excerpt : messageFiles
 
   return (
     <AppTouchableOpacity onPress={toThread(item)} style={[styles.item, index === 0 ? { paddingTop: 0 } : {}]}>
@@ -118,7 +122,7 @@ const MessageSingleComponent = (props) => {
                 />
               )}
               <Text style={[global.messageExcerpt, { flex: 1 }, item.unread ? { color: colors.textColor } : {}]}>
-                {item.excerpt}
+                {message}
               </Text>
             </View>
           </View>
