@@ -1,5 +1,5 @@
 import React from "react";
-import { NativeModules, Text, View } from "react-native";
+import { NativeModules, Linking, View } from "react-native";
 import MessageSingleComponent from "./MessageSingleComponent";
 import ThreadItemHeader from "./ThreadItemHeader";
 import TopicTitle from "./TopicTitle";
@@ -15,14 +15,34 @@ export const applyCustomCode = (externalCodeSetup) => {
   messagesScreenApi.setMessageSingleComponent((props) => <MessageSingleComponent {...props} />);
   messagesSingleScreenApi.setThreadItemHeader((props) => <ThreadItemHeader {...props} />);
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
+
+    const newButton = {
+        flow: [
+            {
+                check: () => true, //Return `true` to show the button
+                buttons: [
+                    {
+                        icon: {fontIconName: "phone-call", weight: "400"},
+                        label: "Audio Call",
+                        isNavigation: true, //If set to true, the button will not be set to a "loading" state
+                        useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+                        doFunction: () => {
+                            return Linking.openURL('https://property.inc/?custom-link-jwt-generate=https://property.inc/members');
+                        }
+                    }
+                ]
+            }
+        ]
+    };
+
     /// remove archive  message button
     buttonConfig.splice(1, 1);
 
-    return [...buttonConfig];
+    return [...buttonConfig, newButton];
   });
    
  
-   externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar); 
+  externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar); 
   topicSingleApi.setTopicTitleComponent(TopicTitle);
   activitiesScreenApi.setActivityToViewModelFilter((viewModel, activity, depend) => {
     const hrefRegex = /href="([^"]+)"/;
