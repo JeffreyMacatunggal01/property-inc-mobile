@@ -1,5 +1,5 @@
 import React from "react";
-import { NativeModules, Linking, View } from "react-native";
+import { NativeModules, Linking, View, Alert } from "react-native";
 import MessageSingleComponent from "./MessageSingleComponent";
 import ThreadItemHeader from "./ThreadItemHeader";
 import TopicTitle from "./TopicTitle";
@@ -27,6 +27,16 @@ export const applyCustomCode = (externalCodeSetup) => {
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (a) => {
                 console.log(a, "dofunc");
+
+                Alert.alert(
+                  'Alert Title',
+                  a,
+                  [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                  ],
+                  { cancelable: false }
+                );
+
                 return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members");
               },
             },
@@ -37,6 +47,16 @@ export const applyCustomCode = (externalCodeSetup) => {
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (a) => {
                 console.log(a, "dofunc");
+                
+                Alert.alert(
+                  'Alert Title',
+                  a,
+                  [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                  ],
+                  { cancelable: false }
+                );
+
                 return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members");
               },
             },
