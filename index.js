@@ -15,24 +15,34 @@ export const applyCustomCode = (externalCodeSetup) => {
   messagesScreenApi.setMessageSingleComponent((props) => <MessageSingleComponent {...props} />);
   messagesSingleScreenApi.setThreadItemHeader((props) => <ThreadItemHeader {...props} />);
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
-
     const newButton = {
-        flow: [
+      flow: [
+        {
+          check: () => true, //Return `true` to show the button
+          buttons: [
             {
-                check: () => true, //Return `true` to show the button
-                buttons: [
-                    {
-                        icon: {fontIconName: "phone-call", weight: "400"},
-                        label: "Audio Call",
-                        isNavigation: true, //If set to true, the button will not be set to a "loading" state
-                        useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-                        doFunction: () => {
-                            return Linking.openURL('https://property.inc/?custom-link-jwt-generate=https://property.inc/members');
-                        }
-                    }
-                ]
-            }
-        ]
+              icon: { fontIconName: "phone-call", weight: "400" },
+              label: "Audio Call",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (a) => {
+                console.log(a, "dofunc");
+                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members");
+              },
+            },
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "Video Call",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (a) => {
+                console.log(a, "dofunc");
+                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members");
+              },
+            },
+          ],
+        },
+      ],
     };
 
     /// remove archive  message button
@@ -40,9 +50,7 @@ export const applyCustomCode = (externalCodeSetup) => {
 
     return [...buttonConfig, newButton];
   });
-   
- 
-  externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar); 
+  externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
   topicSingleApi.setTopicTitleComponent(TopicTitle);
   activitiesScreenApi.setActivityToViewModelFilter((viewModel, activity, depend) => {
     const hrefRegex = /href="([^"]+)"/;
