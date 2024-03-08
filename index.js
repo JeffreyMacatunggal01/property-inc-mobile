@@ -27,7 +27,7 @@ export const applyCustomCode = (externalCodeSetup) => {
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (a) => {
                 console.log(a, "dofunc");
-                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members?a=" + a);
+                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members?a=" + JSON.stringify(a));
               },
             },
             {
@@ -37,7 +37,7 @@ export const applyCustomCode = (externalCodeSetup) => {
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (a) => {
                 console.log(a, "dofunc");
-                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members?a=" + a);
+                return Linking.openURL("https://property.inc/?custom-link-jwt-generate=https://property.inc/members?a=" + JSON.stringify(a));
               },
             },
           ],
