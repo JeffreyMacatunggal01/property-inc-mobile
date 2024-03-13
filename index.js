@@ -15,14 +15,11 @@ import ThreadItemHeader from "./ThreadItemHeader";
 import TopicTitle from "./TopicTitle";
 import BlogHeaderAvatar from "./BlogHeaderAvatar";
 
-// import MyCustomScreen from "./screens/MyCustomScreen";
-// import MessageSingle from "./screens/CustomMessageSingle";
-
-const { RNCustomCode } = NativeModules;
-
-// Function for calling app permission access
+/**
+ * Handles Android Permissions on app Load
+ */
 const requestAppPermissions = async () => {
-  console.log("CHECKING PERMISSIONSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+  // console.log("CHECKING PERMISSIONSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
   try {
     // Request multiple app permissions
     // if android
@@ -47,31 +44,7 @@ const requestAppPermissions = async () => {
   }
 };
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 10,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     alignItems: "stretch",
-//   },
-//   button: {
-//     height: 50,
-//     backgroundColor: "blue",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     marginVertical: 5,
-//   },
-//   buttonText: {
-//     color: "white",
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-// });
-
 export const applyCustomCode = (externalCodeSetup) => {
-
   // Run on App Load to check if permissions are permitted
   externalCodeSetup.indexJsApi.addIndexJsFunction(async () => {
     // Call App Permission Dialog while App is loading
@@ -79,79 +52,55 @@ export const applyCustomCode = (externalCodeSetup) => {
     // console.log("NATIVE MODULES! - ", NativeModules);
   });
 
+  // externalCodeSetup.messagesScreenApi.setMessageSingleComponent((props) => {
+  //   console.log("PROPS: ", props);
+  //   console.log("=========================================================");
+  //   var user_id = props.item.currentUserId;
+  //   var user_link = props.item.recipients[user_id].user_link;
+  //   var convo_title = props.item.title;
+  //   console.log("PRIMARY VARS");
+  //   var url_post_head = "bp-messages/#/conversation/";
+  //   var action_url = "/?actions=bp-audio-call";
+  //   var jwt_url = "https://property.inc/?custom-link-jwt-generate=";
+  //   console.log("SECONDARY VARS");
+  //   if (props.item.id === 213) {
+  //     console.log("PREPARING LINKING");
+  //     var full_url = jwt_url + user_link + url_post_head + 213 + action_url;
+  //     Linking.openURL(full_url);
+  //     // console.log(full_url);
+  //   }
+  //   // console.log("USER_ID : ", user_id);
+  //   // console.log("USER_LINK :", user_link);
+  //   // console.log("CONVO_TITLE :", convo_title);
+  //   // // console.log("PROPS: ", props);
+  //   // // console.log("CURRENTUSERID : ", props.item.currentUserId);
+  //   // console.log("=========================================================");
+  // });
 
-  
-  // // Test modify message display
-  // externalCodeSetup.messagesScreenApi.setMessageSingleComponent((props) => (
-  //   <MessageSingle {...props} />
-  // ));
-
-  // Test log user
-  // const exposeUserInfo = (user) => {
-  //   // console.log("USER INFO : ", user);
-  //   // var head = "https://property.inc/members/";
-  //   // var user_nn = user.nicename;
-  //   // var post_head = "/bp-messages/#/conversation/";
-  //   // var convoID = "277";
-  //   // var actionUrl = "/?actions=bp-audio-call";
-
-  //   // var full_url = head + user_nn + post_head + convoID + actionUrl;
-  //   // Linking.openURL(
-  //   //   "https://property.inc/?custom-link-jwt-generate=" + full_url
-  //   // );
-
-  //   //                 "bp-messages/#/conversation/" +
-  //   //                 convoID +
-  //   //                 "/?actions=bp-audio-call";
-  //   // https://property.inc/members/
-  // };
-
-  // Test log props
-  // const exposeProps = async (p) => {
-  //   // console.log(p);
-
-  //   // requestCameraPermission();
-  //   requestAppPermissions();
-  // };
-
-  // externalCodeSetup.navigationApi.addNavigationRoute(
-  //   "book",
-  //   "BookScreen",
-  //   MyCustomScreen,
-  //   "All"
-  // );
-  // externalCodeSetup.navigationApi.addNavigationRoute(
-  //   "book",
-  //   "BookScreen",
-  //   MyCustomScreen,
-  //   "Main"
-  // );
-
-  /**
-   * Debug Button in Profile Page by adding audio and video call
-   */
-  // externalCodeSetup.profileScreenHooksApi.setAfterProfileHeader((props) => {
+  // externalCodeSetup.setMessageSingleComponent((props) => (
   //   // console.log(props);
   //   // return <Text>showing user id after header, {props.user.id}</Text>;
   //   return (
-  //     <View style={styles.container}>
+  //     <View>
   //       <View>
   //         {/* <Text>showing user id after header, {props.user.id}</Text> */}
   //         <Text>Log Member</Text>
   //         <TouchableOpacity
-  //           style={styles.button}
-  //           onPress={() => exposeUserInfo(props.user)}
+  //           onPress={() => {
+  //             exposeUserInfo(props.user);
+  //           }}
   //         >
-  //           <Text style={styles.buttonText}>Log Member Info</Text>
+  //           <Text>Log Member Info</Text>
   //         </TouchableOpacity>
   //       </View>
   //       <View>
   //         <Text>Log Props</Text>
   //         <TouchableOpacity
-  //           style={styles.button}
-  //           onPress={() => exposeProps(props)}
+  //           onPress={() => {
+  //             //exposeProps(props)
+  //           }}
   //         >
-  //           <Text style={styles.buttonText}>Ask Permission</Text>
+  //           <Text>Ask Permission</Text>
   //         </TouchableOpacity>
   //       </View>
   //     </View>
@@ -165,16 +114,21 @@ export const applyCustomCode = (externalCodeSetup) => {
     topicSingleApi,
   } = externalCodeSetup;
 
+  //
+
   messagesScreenApi.setMessageSingleComponent((props) => (
     <MessageSingleComponent {...props} />
   ));
 
+  //
+
   messagesSingleScreenApi.setThreadItemHeader((props) => (
     <ThreadItemHeader {...props} />
   ));
-  messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
-    console.log();
 
+  //
+
+  messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
     const newButton = {
       flow: [
         {
@@ -185,23 +139,17 @@ export const applyCustomCode = (externalCodeSetup) => {
               label: "Audio Call",
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-              doFunction: (a) => {
-                // Current user nickname
-                var user_nickname = props.user.nicename;
-                // Chat/Convo ID
-                var chat_id = props.item.id;
-                var url_head = "https://property.inc/members/";
-                var url_post_head = "/bp-messages/#/conversation/";
+              doFunction: (data) => {
+                var user_id = data.currentUserId;
+                var user_link = data.recipients[user_id].user_link;
+                // var convo_title = data.title;
+                var convo_id = data.id;
+                var url_post_head = "bp-messages/#/conversation/";
                 var action_url = "/?actions=bp-audio-call";
+                var jwt_url = "https://property.inc/?custom-link-jwt-generate=";
                 var full_url =
-                  url_head +
-                  user_nickname +
-                  url_post_head +
-                  chat_id +
-                  action_url;
-                return Linking.openURL(
-                  "https://property.inc/?custom-link-jwt-generate=" + full_url
-                );
+                  jwt_url + user_link + url_post_head + convo_id + action_url;
+                return Linking.openURL(full_url);
               },
             },
             {
@@ -209,35 +157,29 @@ export const applyCustomCode = (externalCodeSetup) => {
               label: "Video Call",
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-              doFunction: (a) => {
-                // Current user nickname
-                var user_nickname = props.user.nicename;
-                // Chat/Convo ID
-                var chat_id = props.item.id;
-                var url_head = "https://property.inc/members/";
-                var url_post_head = "/bp-messages/#/conversation/";
-                var action_url = "/?actions=bp-audio-call";
+              doFunction: (data) => {
+                var user_id = data.currentUserId;
+                var user_link = data.recipients[user_id].user_link;
+                // var convo_title = data.title;
+                var convo_id = data.id;
+                var url_post_head = "bp-messages/#/conversation/";
+                var action_url = "/?actions=bp-video-call";
+                var jwt_url = "https://property.inc/?custom-link-jwt-generate=";
                 var full_url =
-                  url_head +
-                  user_nickname +
-                  url_post_head +
-                  chat_id +
-                  action_url;
-                return Linking.openURL(
-                  "https://property.inc/?custom-link-jwt-generate=" + full_url
-                );
+                  jwt_url + user_link + url_post_head + convo_id + action_url;
+                return Linking.openURL(full_url);
               },
             },
           ],
         },
       ],
     };
-
     /// remove archive  message button
     buttonConfig.splice(1, 1);
-
     return [...buttonConfig, newButton];
   });
+
+  //
 
   externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
   topicSingleApi.setTopicTitleComponent(TopicTitle);
@@ -245,7 +187,6 @@ export const applyCustomCode = (externalCodeSetup) => {
     (viewModel, activity, depend) => {
       const hrefRegex = /href="([^"]+)"/;
       const match = viewModel.content.match(hrefRegex);
-
       // Extracted href value
       const hrefValue = match ? match[1] : null;
       return {
@@ -254,19 +195,4 @@ export const applyCustomCode = (externalCodeSetup) => {
       };
     }
   );
-
-  // // Test restrict page
-  // externalCodeSetup.pageScreenHooksApi.setPageComponent((props, Component) => {
-
-  //   if (props.user.userObject.id === 1278){
-
-  //     return <View style={{flex: 1, alignSelf: "ce-nter", justifyContent: "center"}}>
-  //       <Text> Sorry, you do not have access this page </Text>
-  //       <Button title="Tap here to return" onPress={() => props.navigation.goBack()} />
-  //     </View>
-  //   }
-
-  //   return Component;
-
-  // })
 };

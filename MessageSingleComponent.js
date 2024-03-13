@@ -53,7 +53,7 @@ const MessageSingleComponent = (props) => {
     }
   }
 
-  console.log(item, "item data");
+  // console.log(item, "item data");
   const { lastMessage } = item 
   const filesCount = lastMessage?.meta?.files?.length;
   const messageFiles = `Added ${filesCount} attachment`
