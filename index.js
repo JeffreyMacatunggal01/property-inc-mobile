@@ -9,9 +9,11 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView 
 } from "react-native";
 import MessageSingleComponent from "./MessageSingleComponent";
 import ThreadItemHeader from "./ThreadItemHeader";
+import ThreadItemText from "./ThreadItemText.js";
 import TopicTitle from "./TopicTitle";
 import BlogHeaderAvatar from "./BlogHeaderAvatar";
 
@@ -45,6 +47,9 @@ const requestAppPermissions = async () => {
 };
 
 export const applyCustomCode = (externalCodeSetup) => {
+
+
+
   // Run on App Load to check if permissions are permitted
   externalCodeSetup.indexJsApi.addIndexJsFunction(async () => {
     // Call App Permission Dialog while App is loading
@@ -107,6 +112,10 @@ export const applyCustomCode = (externalCodeSetup) => {
   //   );
   // });
 
+  // externalCodeSetup().indexScreenApiHooks.setHeaderHeight((defaultHeaderHeight, filterType, navigation) => {
+  //   return 250
+  // });
+
   const {
     messagesScreenApi,
     messagesSingleScreenApi,
@@ -120,13 +129,13 @@ export const applyCustomCode = (externalCodeSetup) => {
     <MessageSingleComponent {...props} />
   ));
 
-  //
-
   messagesSingleScreenApi.setThreadItemHeader((props) => (
     <ThreadItemHeader {...props} />
   ));
 
-  //
+  messagesSingleScreenApi.setThreadItemText((props) => (
+    <ThreadItemText {...props} />
+  ));
 
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
     const newButton = {
@@ -179,8 +188,6 @@ export const applyCustomCode = (externalCodeSetup) => {
     return [...buttonConfig, newButton];
   });
 
-  //
-
   externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
   topicSingleApi.setTopicTitleComponent(TopicTitle);
   activitiesScreenApi.setActivityToViewModelFilter(
@@ -195,4 +202,10 @@ export const applyCustomCode = (externalCodeSetup) => {
       };
     }
   );
+
+  // indexScreenApiHooks.setHeaderHeight((defaultHeaderHeight, filterType, navigation) => {
+  //   return 100;
+  // });
+
+  
 };

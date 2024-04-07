@@ -43,6 +43,20 @@ function timeAgo(dateString) {
 const MessageSingleComponent = (props) => {
   const { item, index, global, colors, t, toThread } = props;
 
+  // console.log("PROPS VALUE HERE");
+  // console.log(props);
+  // console.log("ITEMS : ");
+  // console.log(item);
+  // console.log("PROPS:");
+  
+  // console.log("ITEMS :" + JSON.stringify(item));
+  // console.log(item.avatars);
+  // console.log("SUBJECTS:");
+  // console.log(item.lastMessage.subject);
+  // console.log("WHAT IS : " + toThread);
+  // console.log("MESSAGE TITLE : " + item.title);
+
+
   // console.log(item.recipients.find(), "item");
   let lastSenderData;
   for (var i in item.recipients) {
@@ -54,10 +68,14 @@ const MessageSingleComponent = (props) => {
   }
 
   // console.log(item, "item data");
-  const { lastMessage } = item 
+  const { lastMessage } = item ;
   const filesCount = lastMessage?.meta?.files?.length;
-  const messageFiles = `Added ${filesCount} attachment`
-  const message = item.excerpt ? item.excerpt : messageFiles
+  const messageFiles = `Added ${filesCount} attachment`;
+  const message = item.excerpt ? item.excerpt : messageFiles;
+  // const subject = "GC TITLE";
+
+  // Decide what to display in chat gc name in message screen
+  let groupChatName = item.lastMessage.subject.raw ? item.lastMessage.subject.raw : item.title;
 
   return (
     <AppTouchableOpacity onPress={toThread(item)} style={[styles.item, index === 0 ? { paddingTop: 0 } : {}]}>
@@ -109,7 +127,7 @@ const MessageSingleComponent = (props) => {
               ]}
             >
               <View style={{ flex: 1 }}>
-                <RichHtmlText colors={colors} numberOfLines={1} richText={item.title} style={global.itemAuthorName} />
+                <RichHtmlText colors={colors} numberOfLines={1} richText={groupChatName} style={global.itemAuthorName} />
               </View>
               <Text style={[global.itemLightMeta]}>{timeAgo(item.dateUTC)}</Text>
             </View>
@@ -130,6 +148,7 @@ const MessageSingleComponent = (props) => {
       </View>
     </AppTouchableOpacity>
   );
+  
 };
 
 const styles = StyleSheet.create({
