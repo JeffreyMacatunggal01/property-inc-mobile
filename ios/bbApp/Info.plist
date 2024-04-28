@@ -2,6 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Property Inc uses the microphone to capture sound for Audio Call.</string>
+    <key>NSCameraUsageDescription</key>
+    <string><string>Property Inc uses the camera to capture image for Video Call.</string></string>
 </dict>
 </plist>
