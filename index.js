@@ -134,10 +134,10 @@ const CustomWebView = ({ route }) => {
         originWhitelist={["*"]}
         onMessage={(event) => {}}
         ref={() => {}}
-        sharedCookiesEnabled={true}
+        // sharedCookiesEnabled={true}
         allowsBackForwardNavigationGestures={true}
         javaScriptEnabled={true}
-        thirdPartyCookiesEnabled={true}
+        // thirdPartyCookiesEnabled={true}
         onLoad={(syntheticEvent) => {
           setShowButtonAndWebView(true);
           setShowActivityIndicator(false);
@@ -167,10 +167,10 @@ const CustomWebView2 = ({ route }) => {
         originWhitelist={["*"]}
         onMessage={(event) => {}}
         ref={() => {}}
-        sharedCookiesEnabled={true}
+        // sharedCookiesEnabled={true}
         allowsBackForwardNavigationGestures={true}
         javaScriptEnabled={true}
-        thirdPartyCookiesEnabled={true}
+        // thirdPartyCookiesEnabled={true}
         source={{
           uri: url,
           headers: {
