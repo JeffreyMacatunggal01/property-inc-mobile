@@ -130,27 +130,55 @@ const CustomWebView = ({ route }) => {
         <ActivityIndicator size="large" color="#00ff00" />
       )}
       <WebView
-        // useWebkit
+        useWebkit
         originWhitelist={["*"]}
-        baseurl=" "
-        // allowInlineMediaPlayback={true}
-        // mediaPlaybackRequiresUserAction={false}
         onMessage={(event) => {}}
         ref={() => {}}
         sharedCookiesEnabled={true}
-        // style={styles.webview}
         allowsBackForwardNavigationGestures={true}
-        javaScriptEnabled
-        // injectedJavaScriptBeforeContentLoadedd={"document.cookie='myCookie=myValue';"}
-        // injectedJavaScript={runFirst}
-        // onLoad = show the web
-        // onLoading = show a loading screen
+        javaScriptEnabled={true}
+        thirdPartyCookiesEnabled={true}
         onLoad={(syntheticEvent) => {
           setShowButtonAndWebView(true);
           setShowActivityIndicator(false);
         }}
         source={{
           uri: url,
+          // headers: {
+          //   Cookie: "bbapp=bbapp_view:domain=.property.inc:path=/;",
+          // },
+          headers: {
+            bbapp: "bbapp_view",
+          },
+        }}
+      />
+    </SafeAreaView>
+  );
+};
+
+const CustomWebView2 = ({ route }) => {
+  const { url } = route.params;
+  const [showActivityIndicator, setShowActivityIndicator] = useState(true);
+
+  return (
+    <SafeAreaView style={{ flex: 1, marginTop: 40, marginBottom: 40 }}>
+      <WebView
+        useWebkit
+        originWhitelist={["*"]}
+        onMessage={(event) => {}}
+        ref={() => {}}
+        sharedCookiesEnabled={true}
+        allowsBackForwardNavigationGestures={true}
+        javaScriptEnabled={true}
+        thirdPartyCookiesEnabled={true}
+        source={{
+          uri: url,
+          headers: {
+            bbapp: "bbapp_view",
+          },
+        }}
+        onLoad={(syntheticEvent) => {
+          // setShowActivityIndicator(false);
         }}
       />
     </SafeAreaView>
@@ -168,11 +196,10 @@ const CustomJitsiView = ({ route }) => {
     setModalVisible(false);
   };
 
-
   return (
     <View style={{ flex: 1 }}>
       <WebView
-        // useWebkit
+        useWebkit
         originWhitelist={["*"]}
         baseurl=" "
         onMessage={(event) => {}}
@@ -182,6 +209,9 @@ const CustomJitsiView = ({ route }) => {
         javaScriptEnabled
         source={{
           uri: url,
+          headers: {
+            Cookie: "bbapp=bbapp_view:domain=.property.inc:path=/",
+          },
         }}
       />
       {/* <Text>Custom JitsiView</Text>
@@ -312,6 +342,13 @@ export const applyCustomCode = (externalCodeSetup) => {
     "All" // "Auth" | "noAuth" | "Main" | "All"
   );
 
+  navigationApi.addNavigationRoute(
+    "CustomWebView2",
+    "CustomWebView2",
+    CustomWebView2,
+    "All" // "Auth" | "noAuth" | "Main" | "All"
+  );
+
   // navigationApi.addNavigationRoute(
   //   "customMessage",
   //   "customMessage",
@@ -379,6 +416,28 @@ export const applyCustomCode = (externalCodeSetup) => {
         {
           check: () => true, //Return `true` to show the button
           buttons: [
+            // {
+            //   icon: { fontIconName: "video", weight: "400" },
+            //   label: "Audio/Video Call",
+            //   isNavigation: true, //If set to true, the button will not be set to a "loading" state
+            //   useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+            //   doFunction: (data) => {
+            //     var user_id = data.currentUserId;
+            //     var user_link = data.recipients[user_id].user_link;
+            //     var convo_id = data.id;
+            //     var new_url = "https://property.inc?bbapp-call-jwt=audio";
+            //     var convo_url = "&convo-id=" + convo_id;
+            //     var uid_url = "&user-id=" + user_id;
+            //     var name_url = "&name=" + user_link;
+            //     var rtoken_url = "&rtoken=" + userRefToken;
+            //     var full_url =
+            //       new_url + convo_url + uid_url + name_url + rtoken_url;
+            //     console.log("URL : ", full_url);
+            //     navigation.navigate("CustomWebView", {
+            //       url: full_url,
+            //     });
+            //   },
+            // },
             {
               icon: { fontIconName: "video", weight: "400" },
               label: "Audio/Video Call",
@@ -396,7 +455,7 @@ export const applyCustomCode = (externalCodeSetup) => {
                 var full_url =
                   new_url + convo_url + uid_url + name_url + rtoken_url;
                 console.log("URL : ", full_url);
-                navigation.navigate("CustomWebView", {
+                navigation.navigate("CustomWebView2", {
                   url: full_url,
                 });
               },
