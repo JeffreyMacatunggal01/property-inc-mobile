@@ -17,7 +17,10 @@
     "react": "^17.0.2",
     "react-native": "^0.67.4"
   },
-  "dependencies": {
+  "nativeDependencies": {
     "@pusher/pusher-websocket-react-native": "^1.3.1"
+  },
+  "podDependencies": {
+    "pusher-websocket-react-native": "@pusher/pusher-websocket-react-native"
   }
 }

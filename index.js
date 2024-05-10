@@ -3,11 +3,18 @@ import CustomInitJS from "./dev/custom/AdditionalPermissions";
 import BlogHeaderAvatar from "./components/custom_bbapp/BlogHeaderAvatar.js";
 import TopicTitle from "./components/custom_bbapp/ThreadItemText.js";
 import ThreadItemHeader from "./components/custom_bbapp/ThreadItemHeader.js";
-import { Pusher, PusherEvent } from "@pusher/pusher-websocket-react-native";
+// import { Pusher, PusherEvent } from "@pusher/pusher-websocket-react-native";
+import Pusher from "pusher-js";
 
 export const applyCustomCode = (externalCodeSetup) => {
   const initialState = { count: 0 };
-  const pusher = Pusher.getInstance();
+  var pusher = new Pusher("e02076a427aa8428710c", {
+    cluster: "ap1",
+  });
+  var channel = pusher.subscribe("my-channel");
+  channel.bind("chat-A", function (data) {
+    console.log(data.message);
+  });
 
   function reducer(state, action) {
     switch (action.type) {
@@ -91,22 +98,7 @@ export const applyCustomCode = (externalCodeSetup) => {
     return [...props, newbuttons];
   });
 
-  indexJsApi.addIndexJsFunction(async () => {
-    await pusher.init({
-      apiKey: "e02076a427aa8428710c",
-      cluster: "ap1",
-    });
-
-    await pusher.connect();
-
-    let myChannel = await pusher.subscribe({
-      channelName: "my-channel",
-      onEvent: function (event) {
-        console.log("onEvent: " + event);
-      },
-    });
-    
-  });
+  indexJsApi.addIndexJsFunction(() => {});
 };
 
 // import React, { useState, useEffect } from "react";
