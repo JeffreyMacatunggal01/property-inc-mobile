@@ -48,28 +48,28 @@ const BackButton = (props) => {
 
   //Get a user object from the redux state..
   //In this case, redirect to own profile
-  const user = state.user.userObject;
+  // const user = state.user.userObject;
 
-  const toProfile = () => {
-    //Modify back button in a specific screen only. In this case, "Books" screen
-    if (props.navigation.state?.params?.item?.label === "MessagesScreen") {
-      props.navigation.dispatch(
-        CommonActions.navigate({
-          name: "ProfileScreen",
-          params: { user: user },
-        })
-      );
-    } else {
-      props.navigation.goBack();
-    }
-  };
+  // const toProfile = () => {
+  //   //Modify back button in a specific screen only. In this case, "Books" screen
+  //   if (props.navigation.state?.params?.item?.label === "MessagesScreen") {
+  //     props.navigation.dispatch(
+  //       CommonActions.navigate({
+  //         name: "ProfileScreen",
+  //         params: { user: user },
+  //       })
+  //     );
+  //   } else {
+  //     props.navigation.goBack();
+  //   }
+  // };
 
   return (
     <Button
       title="Back"
       onPress={() => {
-        toProfile();
-        console.log(JSON.stringify(state.user.userObject));
+        // toProfile();
+        // console.log(JSON.stringify(state.user.userObject));
       }}
     />
   );
@@ -96,6 +96,29 @@ const fetchAllItems = async () => {
   } catch (error) {
     alert(error);
   }
+};
+
+const MyMessageScreen = () => {
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     console.log("This will run when the screen is focused");
+
+  //     return () => {
+  //       console.log("This will run when the screen goes out of focus");
+  //       // Any cleanup actions if necessary
+  //     };
+  //   }, [])
+  // );
+
+  return (
+    <View>
+      <Button title="Btn 1" />
+      <Button title="Btn 2" />
+      <Button title="Btn 3" />
+      <Button title="Btn 4" />
+    </View>
+  );
 };
 
 // custom message screen for testing apis
@@ -275,7 +298,7 @@ export const applyCustomCode = (externalCodeSetup) => {
 
   // Register custom screen/pages
   // Custom message single screen
-  navigationApi.replaceScreenComponent("messages", CustomMessageScreen);
+  // navigationApi.replaceScreenComponent("messages", MyMessageScreen);
 
   // Call sir Sean added scripts
   messagesSingleScreenApi.setThreadItemHeader((props) => (
@@ -382,6 +405,31 @@ export const applyCustomCode = (externalCodeSetup) => {
   // Replaces backbutton on all screen
   screenHooksApi.setBackButtonRenderer((props) => <BackButton {...props} />);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // import React, { useState, useEffect } from "react";
 // import {
