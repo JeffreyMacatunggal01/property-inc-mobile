@@ -40,7 +40,7 @@ function timeAgo(dateString) {
   }
 }
 
-const MessageSingleComponent = (props) => {
+const MessageSingleScreen = (props) => {
   const { item, index, global, colors, t, toThread } = props;
 
   // console.log("PROPS VALUE HERE");
@@ -207,4 +207,4 @@ const avatarStyles = StyleSheet.create({
   },
 });
 
-export default withSettings(MessageSingleComponent);
+export default withSettings(MessageSingleScreen);
