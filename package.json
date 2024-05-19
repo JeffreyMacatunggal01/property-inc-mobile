@@ -25,6 +25,7 @@
     "jitsi-meet-rnsdk": "@jitsi/react-native-sdk"
   },
   "dependencies": {
-    "@jitsi/react-native-sdk": "^2.2.1"
+    "@jitsi/react-native-sdk": "^2.2.1",
+    "peerjs": "^1.5.4"
   }
 }
