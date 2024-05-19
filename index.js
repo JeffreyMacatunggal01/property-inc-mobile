@@ -1,20 +1,251 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import CustomInitJS from "./dev/custom/AdditionalPermissions";
 import BlogHeaderAvatar from "./components/custom_bbapp/BlogHeaderAvatar.js";
 import TopicTitle from "./components/custom_bbapp/ThreadItemText.js";
 import ThreadItemHeader from "./components/custom_bbapp/ThreadItemHeader.js";
+import AsyncStorage from "@react-native-community/async-storage";
 // import { Pusher, PusherEvent } from "@pusher/pusher-websocket-react-native";
-import Pusher from "pusher-js";
+// import Pusher from "pusher-js";
+import axios from "axios";
+import {
+  Pusher,
+  PusherMember,
+  PusherChannel,
+  PusherEvent,
+} from "@pusher/pusher-websocket-react-native";
+
+// How to use react-redux within BuddyBoss App
+// import needed modules
+import { useSelector } from "react-redux";
+import { CommonActions, useFocusEffect } from "@react-navigation/native";
+import {
+  Button,
+  FlatList,
+  Pressable,
+  TextInput,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    width: 200,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+});
+
+const BackButton = (props) => {
+  const state = useSelector((state) => state);
+
+  //Get a user object from the redux state..
+  //In this case, redirect to own profile
+  const user = state.user.userObject;
+
+  const toProfile = () => {
+    //Modify back button in a specific screen only. In this case, "Books" screen
+    if (props.navigation.state?.params?.item?.label === "MessagesScreen") {
+      props.navigation.dispatch(
+        CommonActions.navigate({
+          name: "ProfileScreen",
+          params: { user: user },
+        })
+      );
+    } else {
+      props.navigation.goBack();
+    }
+  };
+
+  return (
+    <Button
+      title="Back"
+      onPress={() => {
+        toProfile();
+        console.log(JSON.stringify(state.user.userObject));
+      }}
+    />
+  );
+};
+
+const fetchAccessToken = async () => {
+  try {
+    const value = await AsyncStorage.getItem("token");
+    return value;
+  } catch (error) {
+    console.log(error, "problemo");
+  }
+};
+
+const fetchAllItems = async () => {
+  try {
+    const result = {};
+    const keys = await AsyncStorage.getAllKeys();
+    for (const key of keys) {
+      const val = await AsyncStorage.getItem(key);
+      result[key] = val;
+    }
+    return result;
+  } catch (error) {
+    alert(error);
+  }
+};
+
+// custom message screen for testing apis
+const CustomMessageScreen = (props) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("This will run when the screen is focused");
+
+      return () => {
+        console.log("This will run when the screen goes out of focus");
+        // Any cleanup actions if necessary
+      };
+    }, [])
+  );
+
+  // const onComponentInit = () => {
+  //   console.log("Component has been initialized.");
+  //   // You can perform any additional setup here, such as fetching data, setting up subscriptions, etc.
+  // };
+
+  // useEffect(() => {
+  //   onComponentInit();
+  //   // If you pass an empty array as the second argument to useEffect,
+  //   // it acts like componentDidMount and the effect only runs once after the initial render.
+  // }, []);
+
+  // store interest
+  // const config = useSelector((state) => state.config);
+  const auth = useSelector((state) => state.auth);
+  // const firebase = useSelector((state) => state.firebase);
+  const user = useSelector((state) => state.user);
+
+  // make sure the make one instance of axios only
+
+  let instance;
+  if (axios.defaults) {
+    instance = axios;
+
+    axios.defaults.headers.common["accessToken"] = auth.token;
+    // console.log("AN AXIOS INSTANCE IS ALREADY PRESENT");
+    // instance.interceptors.request.use(
+    //   function (config) {
+    //     // Do something before request is sent
+    //     console.log("INTERCEPTED : ", config);
+    //     return config;
+    //   },
+    //   function (error) {
+    //     // Do something with request error
+    //     return Promise.reject(error);
+    //   }
+    // );
+
+    // instance.interceptors.response.use(
+    //   (config) => {
+    //     const token = auth.token;
+    //     console.log(token);
+    //     config.headers["accessToken"] = token;
+    //     config.headers.common['accessToken'] = token;
+    //     return config;
+    //   },
+    //   (error) => {
+    //     return Promise.reject(error);
+    //   }
+    // );
+
+    // handle headers
+
+    // handle customs internally
+    // function (response) {
+    //   // Any status code that lie within the range of 2xx cause this function to trigger
+    //   // Do something with response data
+    //   // console.log("Response : ", JSON.stringify(response));
+    //   return response;
+    // },
+    // function (error) {
+    //   // Any status codes that falls outside the range of 2xx cause this function to trigger
+    //   // Do something with response error
+    //   return Promise.reject(error);
+    // }
+  }
+
+  // test ui for sending message
+  const [inputValue, setInputValue] = useState("");
+
+  // handle sending message externally
+  const handleButtonClick2 = async () => {
+    await instance
+      .get("https://property.inc/wp-json/buddyboss/v1/messages")
+      .then((response) => {
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.headers);
+      })
+      .catch((error) => {
+        console.error("Error sending data: ", error);
+      });
+  };
+
+  // handle sending message externally
+  const handleButtonClick = async () => {
+    const data = {
+      id: 328,
+      message: `${inputValue}`,
+    };
+
+    await instance
+      .post("https://property.inc/wp-json/buddyboss/v1/messages", data)
+      .then((response) => {
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.headers);
+      })
+      .catch((error) => {
+        console.error("Error sending data: ", error);
+      });
+  };
+
+  return (
+    <View>
+      <TextInput
+        style={styles.input}
+        value={inputValue}
+        onChangeText={setInputValue} // Update state with input changes
+        placeholder="Message to send"
+      />
+      <Button
+        title="Post Message"
+        onPress={handleButtonClick} // Handle button click
+      />
+      <Button onPress={handleButtonClick2} title="Get Messages" />
+
+      <Button
+        onPress={async () => {
+          console.log(props);
+        }}
+        title="Socket"
+      />
+    </View>
+  );
+};
 
 export const applyCustomCode = (externalCodeSetup) => {
   const initialState = { count: 0 };
-  var pusher = new Pusher("e02076a427aa8428710c", {
-    cluster: "ap1",
-  });
-  var channel = pusher.subscribe("my-channel");
-  channel.bind("chat-A", function (data) {
-    console.log(data.message);
-  });
+  // var pusher = new Pusher("e02076a427aa8428710c", {
+  //   cluster: "ap1",
+  // });
+  // var channel = pusher.subscribe("my-channel");
+  // channel.bind("chat-A", function (data) {
+  //   console.log(data.message);
+  // });
 
   function reducer(state, action) {
     switch (action.type) {
@@ -35,12 +266,16 @@ export const applyCustomCode = (externalCodeSetup) => {
     activitiesScreenApi,
     messagesSingleScreenApi,
     indexJsApi,
+    screenHooksApi,
+    navigationApi,
   } = externalCodeSetup;
   //
   // Call to custom initialization
   CustomInitJS(externalCodeSetup);
 
   // Register custom screen/pages
+  // Custom message single screen
+  navigationApi.replaceScreenComponent("messages", CustomMessageScreen);
 
   // Call sir Sean added scripts
   messagesSingleScreenApi.setThreadItemHeader((props) => (
@@ -98,7 +333,54 @@ export const applyCustomCode = (externalCodeSetup) => {
     return [...props, newbuttons];
   });
 
-  indexJsApi.addIndexJsFunction(() => {});
+  indexJsApi.addIndexJsFunction(async () => {
+    const pusher = Pusher.getInstance();
+
+    try {
+      await pusher.init({
+        apiKey: "e02076a427aa8428710c",
+        cluster: "ap1",
+      });
+
+      const myChannel = await pusher.subscribe({
+        channelName: "my-channel",
+        onEvent: (event) => {
+          // console.log(`Got channel event: ${event}`);
+
+          // filter pusher event
+          if (event.eventName == "chat-A") {
+            console.log("SIMPLE CHAT PUSH NOTIF FROM MAIN.GO!");
+            var data2 = JSON.parse(event.data);
+
+            console.log("Message is ", data2["message"]);
+          } else {
+            console.log("Event not in subscription list!");
+          }
+        },
+      });
+      await pusher.connect();
+      // ,
+      //   // authEndpoint: '<YOUR ENDPOINT URI>',
+      //   onConnectionStateChange,
+      //   onError,
+      //   onEvent,
+      //   onSubscriptionSucceeded,
+      //   onSubscriptionError,
+      //   onDecryptionFailure,
+      //   onMemberAdded,
+      //   onMemberRemoved,
+      //   onSubscriptionCount,
+      // });
+
+      // await pusher.subscribe({ channelName });
+      // await pusher.connect();
+    } catch (e) {
+      console.log(`ERROR: ${e}`);
+    }
+  });
+
+  // Replaces backbutton on all screen
+  screenHooksApi.setBackButtonRenderer((props) => <BackButton {...props} />);
 };
 
 // import React, { useState, useEffect } from "react";
@@ -293,11 +575,11 @@ export const applyCustomCode = (externalCodeSetup) => {
 //     activitiesScreenApi,
 //     topicSingleApi,
 //     reduxApi,
-//     navigationApi,
+//     navigationApi, Bu
 //   } = externalCodeSetup;
 
 //   // External code User Variable/States
-//   let userRefToken = ""; // holds the app/user jwt token for BuddyBoss app use to loginto site via webview
+//   let userRefToken = ""; // holds the app/user jwt token forddyBoss app use to loginto site via webview
 
 //   // // Wrap Epic
 //   // const epicName = "newMessage";
@@ -530,3 +812,113 @@ export const applyCustomCode = (externalCodeSetup) => {
 //     }
 //   );
 // };
+
+// // on Screen open get a reference to state of the app like the tokens
+// const state = useSelector((state) => state);
+
+// const socket = useSelector((socket) => socket);
+
+// const accessToken = state.auth["token"];
+
+// also get a instance of current axios
+
+// State to store the input value
+// const [inputValue, setInputValue] = useState("");
+
+// Function to handle button click
+// const handleButtonClick = async () => {
+//   // You can process the inputValue here or use it as needed
+//   //alert(inputValue);
+
+//   // call async fetch
+//   let token = await AsyncStorage.getItem(inputValue);
+//   console.log(token);
+// };
+
+// return (
+//   <View>
+//     <View>
+//       {/* <FlatList>
+//       </FlatList> */}
+//       <Text>HELLO WORLD</Text>
+//     </View>
+//     <View>
+//       <TextInput
+//         style={styles.input}
+//         value={inputValue}
+//         onChangeText={setInputValue} // Update state with input changes
+//         placeholder="Enter text"
+//       />
+//       <Button
+//         title="Click Me"
+//         onPress={handleButtonClick} // Handle button click
+//       />
+//       <Button
+//         onPress={async () => {
+//           // console.log(JSON.stringify(props));
+//           // console.log(JSON.stringify(state));
+//           // console.log(state);
+//           // console.log(props);
+//           let items = await fetchAllItems();
+//           console.log(items);
+//           console.log("==============================");
+//           let token = await fetchAccessToken();
+//           console.log(token);
+//         }}
+//         title="TOKEN"
+//       />
+
+//       <Button
+//         onPress={async () => {
+//           // console.log(JSON.stringify(props));
+//           // console.log(JSON.stringify(state));
+//           // console.log(state);
+//           // console.log(props);
+//           console.log(state);
+//         }}
+//         title="STATE"
+//       />
+
+//       <Button
+//         onPress={async () => {
+//           // console.log(JSON.stringify(props));
+//           // console.log(JSON.stringify(state));
+//           // console.log(state);
+//           // console.log(props);
+//           console.log(state.auth['token']);
+//         }}
+//         title="Accesstoken"
+//       />
+
+//       <Button
+//         onPress={async () => {
+//           // console.log(JSON.stringify(props));
+//           // console.log(JSON.stringify(state));
+//           // console.log(state);
+//           // console.log(props);
+//           let items = await fetchAllItems();
+//           console.log(items);
+//         }}
+//         title="SEND MESSAGE"
+//       />
+
+// <Button
+//   onPress={async () => {
+//     // do a get message
+
+//     instance
+//       .get("https://property.inc/wp-json/buddyboss/v1/messages")
+//       .then((response) => {
+//         console.log(response.data);
+//         console.log(response.status);
+//         console.log(response.headers);
+//       });
+
+//     // let items = await fetchAllItems();
+//     // console.log(items);
+//   }}
+//   title="GET MESSAGE"
+// />
+//     </View>
+//   </View>
+// );

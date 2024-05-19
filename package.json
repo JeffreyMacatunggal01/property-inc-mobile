@@ -18,9 +18,13 @@
     "react-native": "^0.67.4"
   },
   "nativeDependencies": {
-    "@pusher/pusher-websocket-react-native": "^1.3.1"
+    "@pusher/pusher-websocket-react-native": "^1.3.1",
+    "@jitsi/react-native-sdk": "^2.2.1"
   },
   "podDependencies": {
-    "pusher-websocket-react-native": "@pusher/pusher-websocket-react-native"
+    "jitsi-meet-rnsdk": "@jitsi/react-native-sdk"
+  },
+  "dependencies": {
+    "@jitsi/react-native-sdk": "^2.2.1"
   }
 }
