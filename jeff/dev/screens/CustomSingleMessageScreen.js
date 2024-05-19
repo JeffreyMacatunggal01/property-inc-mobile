@@ -1,7 +1,7 @@
 import React, { useReducer, useState, useEffect } from "react";
+// import { Pusher, PusherEvent } from "@pusher/pusher-websocket-react-native";
+// import Pusher from "pusher-js";
 import axios from "axios";
-import CMessageListItem from "./jeff/dev/components/CMessageListItem";
-import CMessageList from "./jeff/dev/components/CMessageList";
 // How to use react-redux within BuddyBoss App
 // import needed modules
 import { useSelector } from "react-redux";
@@ -56,15 +56,8 @@ const CustomSingleMessageScreen = (props) => {
   // const config = useSelector((state) => state.config);
   const auth = useSelector((state) => state.auth);
   // const firebase = useSelector((state) => state.firebase);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);  
   // const user = state.user;
-
-  const [items, setItems] = useState([]);
-
-  const renderItem = useCallback(
-    ({ item }) => <CMessageListItem character={item} />,
-    []
-  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -76,6 +69,8 @@ const CustomSingleMessageScreen = (props) => {
       };
     }, [])
   );
+
+
 
   // make sure the make one instance of axios only
 
@@ -108,7 +103,7 @@ const CustomSingleMessageScreen = (props) => {
   // handle sending message externally
   const handleButtonClick = async () => {
     const data = {
-      id: 235,
+      id: 328,
       message: `${inputValue}`,
     };
 
@@ -145,10 +140,6 @@ const CustomSingleMessageScreen = (props) => {
         }}
         title="Socket"
       />
-      {/* For FlatList View */}
-      <View>
-        <FlatList data={items} renderItem={renderItem} />
-      </View>
     </View>
   );
 };
