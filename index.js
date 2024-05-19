@@ -4,6 +4,9 @@ import MessageSingleScreen from "./jeff/prod/components/MessageSingleScreen";
 import ThreadItemHeader from "./jeff/prod/components/ThreadItemHeader";
 import BlogHeaderAvatar from "./jeff/prod/components/BlogHeaderAvatar";
 import TopicTitle from "./jeff/prod/components/TopicTitle";
+import CustomSingleMessageScreen from "./jeff/dev/screens/CustomSingleMessageScreen";
+
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export const applyCustomCode = (externalCodeSetup) => {
   // define constant
@@ -13,6 +16,7 @@ export const applyCustomCode = (externalCodeSetup) => {
     activitiesScreenApi,
     topicSingleApi,
     indexJsApi,
+    navigationApi
   } = externalCodeSetup;
 
   // Register custom screens
@@ -53,8 +57,13 @@ export const applyCustomCode = (externalCodeSetup) => {
     }
   );
 
+  // replace screen for singlescreen message
+  navigationApi.replaceScreenComponent("MessagesCreatePostScreen", CustomSingleMessageScreen);
+
+
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
+    const route = useRoute();
     const newButton = {
       flow: [
         {
@@ -66,20 +75,25 @@ export const applyCustomCode = (externalCodeSetup) => {
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (data) => {
-                var user_id = data.currentUserId;
-                var user_link = data.recipients[user_id].user_link;
-                var convo_id = data.id;
-                var new_url = "https://property.inc?bbapp-call-jwt=audio";
-                var convo_url = "&convo-id=" + convo_id;
-                var uid_url = "&user-id=" + user_id;
-                var name_url = "&name=" + user_link;
-                var rtoken_url = "&rtoken=" + userRefToken;
-                var full_url =
-                  new_url + convo_url + uid_url + name_url + rtoken_url;
-                console.log("URL : ", full_url);
+                console.log('Current Route: ', route.name);
+                // console.log("CURRENT ROUTE : ", this.props.route.name);
+
+                // var user_id = data.currentUserId;
+                // var user_link = data.recipients[user_id].user_link;
+                // var convo_id = data.id;
+                // var new_url = "https://property.inc?bbapp-call-jwt=audio";
+                // var convo_url = "&convo-id=" + convo_id;
+                // var uid_url = "&user-id=" + user_id;
+                // var name_url = "&name=" + user_link;
+                // var rtoken_url = "&rtoken=" + userRefToken;
+                // var full_url =
+                //   new_url + convo_url + uid_url + name_url + rtoken_url;
+                // console.log("URL : ", full_url);
                 // navigation.navigate("CustomWebView2", {
                 //   url: full_url,
                 // });
+
+                navigation.navigate("ProfileScreen");
               },
             },
             // CustomWebView
