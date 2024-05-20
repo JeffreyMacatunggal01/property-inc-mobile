@@ -4,7 +4,6 @@ import MessageSingleScreen from "./jeff/prod/components/MessageSingleScreen";
 import ThreadItemHeader from "./jeff/prod/components/ThreadItemHeader";
 import BlogHeaderAvatar from "./jeff/prod/components/BlogHeaderAvatar";
 import TopicTitle from "./jeff/prod/components/TopicTitle";
-import CustomSingleMessageScreen from "./jeff/dev/screens/CustomSingleMessageScreen";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -58,7 +57,7 @@ export const applyCustomCode = (externalCodeSetup) => {
   );
 
   // replace screen for singlescreen message
-  navigationApi.replaceScreenComponent("MessagesCreatePostScreen", CustomSingleMessageScreen);
+  // navigationApi.replaceScreenComponent("MessagesCreatePostScreen", CustomSingleMessageScreen);
 
 
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
@@ -93,7 +92,7 @@ export const applyCustomCode = (externalCodeSetup) => {
                 //   url: full_url,
                 // });
 
-                navigation.navigate("ProfileScreen");
+                // navigation.navigate("ProfileScreen");
               },
             },
             // CustomWebView

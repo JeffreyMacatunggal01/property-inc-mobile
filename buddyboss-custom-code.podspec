@@ -16,6 +16,4 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm}"
 
   s.dependency "React-Core"
-  s.dependency "jitsi-meet-rnsdk"
-  s.dependency "pusher-websocket-react-native"
 end
