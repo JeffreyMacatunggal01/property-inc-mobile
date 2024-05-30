@@ -1,15 +1,20 @@
+import MessageSingleScreen from "./jeff/prod/components/MessageSingleScreen"; // jeff update #1
+import ThreadItemHeader from "./jeff/prod/components/ThreadItemHeader"; // jeff update #2
+import TopicTitle from "./jeff/prod/components/TopicTitle"; // jeff update #3
+import BlogHeaderAvatar from "./jeff/prod/components/BlogHeaderAvatar"; // jeff update #4
+import React from "react";
+// import { InAppBrowser } from 'react-native-inappbrowser-reborn'
+import { Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import PermissionHandler from "./jeff/prod/utilities/PermissionHandler";
-import MessageSingleScreen from "./jeff/prod/components/MessageSingleScreen";
-import ThreadItemHeader from "./jeff/prod/components/ThreadItemHeader";
-import BlogHeaderAvatar from "./jeff/prod/components/BlogHeaderAvatar";
-import TopicTitle from "./jeff/prod/components/TopicTitle";
 import CustomSingleMessageScreen from "./jeff/dev/screens/CustomSingleMessageScreen";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
-
 // to get the current loggedinUser
 import { useSelector } from "react-redux";
+// try get cookies
+import CookieManager from "@react-native-cookies/cookies";
+import { WebView } from "react-native-webview";
 
 export const applyCustomCode = (externalCodeSetup) => {
   // define constant
@@ -19,7 +24,7 @@ export const applyCustomCode = (externalCodeSetup) => {
     activitiesScreenApi,
     topicSingleApi,
     indexJsApi,
-    navigationApi
+    navigationApi,
   } = externalCodeSetup;
 
   let userRefToken = "";
@@ -65,12 +70,13 @@ export const applyCustomCode = (externalCodeSetup) => {
   // replace screen for singlescreen message
   // navigationApi.replaceScreenComponent("MessagesCreatePostScreen", CustomSingleMessageScreen);
 
-
   messagesSingleScreenApi.setActionsFilter((buttonConfig) => {
-    
     // Get state of auth to get the token
-
+    const allState = useSelector((state) => state);
     const auth = useSelector((state) => state.auth);
+
+    const user = useSelector((state) => state.user);
+    const thread = useSelector((state) => state.thread);
 
     const navigation = useNavigation();
     const route = useRoute();
@@ -102,12 +108,18 @@ export const applyCustomCode = (externalCodeSetup) => {
                 var rtoken_url = "&rtoken=" + auth.token;
                 var full_url =
                   new_url + convo_url + uid_url + name_url + rtoken_url;
-                console.log("URL : ", full_url);
+                // console.log("URL : ", full_url);
+
+                console.log(thread);
+                console.log(auth);
+                console.log(user);
                 // navigation.navigate("CustomWebView2", {
                 //   url: full_url,
                 // });
 
                 // navigation.navigate("ProfileScreen");
+
+                // return Linking.openURL(full_url);
               },
             },
             // CustomWebView
@@ -117,6 +129,23 @@ export const applyCustomCode = (externalCodeSetup) => {
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (data) => {
+                // Get user name to point to Web Current Messages
+                const name = user.userObject["name"];
+                // Get current thread ID
+                const threadId = thread.currentId;
+                //
+                const url =
+                  "https://property.inc/members/" +
+                  name +
+                  "/bp-messages/#/conversation/" +
+                  threadId +
+                  "/?actions=bp-audio-call";
+
+                console.log("URL TO OPEN: ", url);
+                return Linking.openURL("https://property.inc?testbbapp=1");
+                // return Linking.openURL(url);
+
+                // console.log(allState);
                 // // prepare URL for
                 // var user_id = data.currentUserId;
                 // var user_link = data.recipients[user_id].user_link;
@@ -133,6 +162,45 @@ export const applyCustomCode = (externalCodeSetup) => {
                 // navigation.navigate("JitsiView", {
                 //   url: "https://property.inc/wp-content/uploads/jitsi/index.html",
                 // });
+              },
+            },
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "App to IOS Safari",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
+                // get the refreshToken
+                let refreshToken = auth.refreshToken;
+                let home = "https://property.inc/";
+                let url =
+                  home +
+                  "?bbapptest=" +
+                  refreshToken +
+                  "&id=" +
+                  user.userObject["id"];
+                custom - jwt - login - bbapp;
+
+                return Linking.openURL(url);
+              },
+            },
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "Custom Login",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
+                let refreshToken = auth.refreshToken;
+                let userID = user.userObject["id"];
+                return Linking.openURL(
+                  "https://property.inc/?custom-jwt-login-bbapp=1" +
+                    "&userID=" +
+                    userID +
+                    "&refreshToken=" +
+                    refreshToken
+                );
+
+                // 'custom-jwt-login-bbap=true'
               },
             },
           ],
