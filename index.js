@@ -4,7 +4,7 @@ import TopicTitle from "./jeff/prod/components/TopicTitle"; // jeff update #3
 import BlogHeaderAvatar from "./jeff/prod/components/BlogHeaderAvatar"; // jeff update #4
 import React from "react";
 // import { InAppBrowser } from 'react-native-inappbrowser-reborn'
-import { Linking } from "react-native";
+import { Linking, SafeAreaView } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import PermissionHandler from "./jeff/prod/utilities/PermissionHandler";
 import CustomSingleMessageScreen from "./jeff/dev/screens/CustomSingleMessageScreen";
@@ -15,6 +15,34 @@ import { useSelector } from "react-redux";
 // try get cookies
 import CookieManager from "@react-native-cookies/cookies";
 import { WebView } from "react-native-webview";
+
+const CustomWebView = ({ route }) => {
+  const { url } = route.params;
+
+  return (
+    <SafeAreaView style={{ flex: 1, marginTop: 40, marginBottom: 40 }}>
+      <WebView
+        useWebkit
+        originWhitelist={["*"]}
+        onMessage={(event) => {}}
+        ref={() => {}}
+        // sharedCookiesEnabled={true}
+        allowsBackForwardNavigationGestures={true}
+        javaScriptEnabled={true}
+        // thirdPartyCookiesEnabled={true}
+        source={{
+          uri: url,
+          headers: {
+            bbapp: "bbapp_view",
+          },
+        }}
+        onLoad={(syntheticEvent) => {
+          // setShowActivityIndicator(false);
+        }}
+      />
+    </SafeAreaView>
+  );
+};
 
 export const applyCustomCode = (externalCodeSetup) => {
   // define constant
@@ -32,6 +60,12 @@ export const applyCustomCode = (externalCodeSetup) => {
   // Register custom screens
   // webview for bettermessages loading of page
   // webview for jitsimeet call
+  navigationApi.addNavigationRoute(
+    "customwebview",
+    "customwebview",
+    CustomWebView,
+    "All" // "Auth" | "noAuth" | "Main" | "All"
+  );
 
   // extra permission calling
   // define logic to call before app
@@ -43,6 +77,8 @@ export const applyCustomCode = (externalCodeSetup) => {
     await PermissionHandler();
   });
 
+  // ############################################################## //
+  // ############################################################## //
   // Add previous custom code on buddy boss app
   messagesScreenApi.setMessageSingleComponent((props) => (
     <MessageSingleScreen {...props} />
@@ -66,6 +102,9 @@ export const applyCustomCode = (externalCodeSetup) => {
       };
     }
   );
+  //
+  // ############################################################## //
+  // ############################################################## //
 
   // replace screen for singlescreen message
   // navigationApi.replaceScreenComponent("MessagesCreatePostScreen", CustomSingleMessageScreen);
@@ -91,12 +130,6 @@ export const applyCustomCode = (externalCodeSetup) => {
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (data) => {
-                // log auth state
-
-                // console.log('Auth : ', auth);
-                // console.log('Current Route: ', route.name);
-                // console.log("CURRENT ROUTE : ", this.props.route.name);
-                // prepare user params for audio/video calling
                 var test = "";
                 var user_id = data.currentUserId;
                 var user_link = data.recipients[user_id].user_link;
@@ -108,21 +141,12 @@ export const applyCustomCode = (externalCodeSetup) => {
                 var rtoken_url = "&rtoken=" + auth.token;
                 var full_url =
                   new_url + convo_url + uid_url + name_url + rtoken_url;
-                // console.log("URL : ", full_url);
 
                 console.log(thread);
                 console.log(auth);
                 console.log(user);
-                // navigation.navigate("CustomWebView2", {
-                //   url: full_url,
-                // });
-
-                // navigation.navigate("ProfileScreen");
-
-                // return Linking.openURL(full_url);
               },
             },
-            // CustomWebView
             {
               icon: { fontIconName: "video", weight: "400" },
               label: "Jitsi Meet Beta",
@@ -143,25 +167,6 @@ export const applyCustomCode = (externalCodeSetup) => {
 
                 console.log("URL TO OPEN: ", url);
                 return Linking.openURL("https://property.inc?testbbapp=1");
-                // return Linking.openURL(url);
-
-                // console.log(allState);
-                // // prepare URL for
-                // var user_id = data.currentUserId;
-                // var user_link = data.recipients[user_id].user_link;
-                // var convo_id = data.id;
-                // var url_post_head = "bp-messages/#/conversation/";
-                // var action_url = "/?actions=bp-video-call";
-                // var jwt_url = "https://property.inc/?bbapp-call-jwt=";
-                // var full_url =
-                //   jwt_url + user_link + url_post_head + convo_id + action_url;
-                // console.log(
-                //   "BUTTON USER/APP STATE LOGGED IN token : ",
-                //   userRefToken
-                // );
-                // navigation.navigate("JitsiView", {
-                //   url: "https://property.inc/wp-content/uploads/jitsi/index.html",
-                // });
               },
             },
             {
@@ -179,9 +184,13 @@ export const applyCustomCode = (externalCodeSetup) => {
                   refreshToken +
                   "&id=" +
                   user.userObject["id"];
+                  
                 // custom - jwt - login - bbapp;
+                navigation.navigate("customwebview", {
+                  url: url,
+                });
 
-                return Linking.openURL(url);
+                // return Linking.openURL(url);
               },
             },
             {
@@ -199,8 +208,6 @@ export const applyCustomCode = (externalCodeSetup) => {
                     "&refreshToken=" +
                     refreshToken
                 );
-
-                // 'custom-jwt-login-bbap=true'
               },
             },
           ],
