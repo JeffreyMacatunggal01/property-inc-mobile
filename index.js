@@ -179,7 +179,7 @@ export const applyCustomCode = (externalCodeSetup) => {
                   refreshToken +
                   "&id=" +
                   user.userObject["id"];
-                custom - jwt - login - bbapp;
+                // custom - jwt - login - bbapp;
 
                 return Linking.openURL(url);
               },
