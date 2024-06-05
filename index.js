@@ -16,6 +16,12 @@ import { useSelector } from "react-redux";
 import CookieManager from "@react-native-cookies/cookies";
 import { WebView } from "react-native-webview";
 
+import MessageWebsocketVersion from "./dev/custom/MessageWebsocketVersion";
+// import WebSocketExample from "./jeff/dev/screens/CustomWebsocketScreen";
+
+import { Websocket } from "react-use-websocket";
+import RenderHtml from "react-native-render-html";
+
 const CustomWebView = ({ route }) => {
   const { url } = route.params;
 
@@ -60,6 +66,20 @@ export const applyCustomCode = (externalCodeSetup) => {
   // Register custom screens
   // webview for bettermessages loading of page
   // webview for jitsimeet call
+  navigationApi.addNavigationRoute(
+    "newmessage",
+    "newmessage",
+    MessageWebsocketVersion,
+    "All" // "Auth" | "noAuth" | "Main" | "All"
+  );
+
+  // navigationApi.addNavigationRoute(
+  //   "customwebsocket",
+  //   "customwebsocket",
+  //   WebSocketExample,
+  //   "All" // "Auth" | "noAuth" | "Main" | "All"
+  // );
+
   navigationApi.addNavigationRoute(
     "customwebview",
     "customwebview",
@@ -124,9 +144,56 @@ export const applyCustomCode = (externalCodeSetup) => {
         {
           check: () => true, //Return `true` to show the button
           buttons: [
+            // Audio Call
+            {
+              icon: { fontIconName: "audio", weight: "400" },
+              label: "Audio Call",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
+                var user_id = data.currentUserId;
+                // var user_link = data.recipients[user_id].user_link;
+                var convo_id = data.id;
+                var new_url = "https://property.inc?bbapp-call-jwt=audio";
+                var convo_url = "&cID=" + convo_id;
+                var uid_url = "&uID=" + user_id;
+                // var name_url = "&name=" + user_link;
+                var rtoken_url = "&rtoken=" + auth.refreshToken;
+                var full_url = new_url + convo_url + uid_url + rtoken_url;
+
+                navigation.navigate("customwebview", {
+                  url: full_url,
+                });
+              },
+            },
+            // Video Call
             {
               icon: { fontIconName: "video", weight: "400" },
-              label: "Audio/Video Call",
+              label: "Video Call",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
+                // var test = "";
+                var user_id = data.currentUserId;
+                // var user_link = data.recipients[user_id].user_link;
+                var convo_id = data.id;
+                var new_url = "https://property.inc?bbapp-call-jwt=video";
+                var convo_url = "&cID=" + convo_id;
+                var uid_url = "&uID=" + user_id;
+                // var name_url = "&name=" + user_link;
+                var rtoken_url = "&rtoken=" + auth.refreshToken;
+                var full_url = new_url + convo_url + uid_url + rtoken_url;
+                console.log(full_url);
+
+                navigation.navigate("customwebview", {
+                  url: full_url,
+                });
+              },
+            },
+            // Open Custom Webview
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "Custom Webview",
               isNavigation: true, //If set to true, the button will not be set to a "loading" state
               useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
               doFunction: (data) => {
@@ -134,82 +201,43 @@ export const applyCustomCode = (externalCodeSetup) => {
                 var user_id = data.currentUserId;
                 var user_link = data.recipients[user_id].user_link;
                 var convo_id = data.id;
-                var new_url = "https://property.inc?bbapp-call-jwt=audio";
-                var convo_url = "&convo-id=" + convo_id;
-                var uid_url = "&user-id=" + user_id;
-                var name_url = "&name=" + user_link;
-                var rtoken_url = "&rtoken=" + auth.token;
-                var full_url =
-                  new_url + convo_url + uid_url + name_url + rtoken_url;
+                var new_url = "https://property.inc?bbapp-call-jwt=video";
+                var convo_url = "&cID=" + convo_id;
+                var uid_url = "&uID=" + user_id;
 
+                // var name_url = "&name=" + user_link;
+
+                var rtoken_url = "&rtoken=" + auth.refreshToken;
+                var full_url = new_url + convo_url + uid_url + rtoken_url;
+
+                navigation.navigate("customwebview", {
+                  url: full_url,
+                });
+              },
+            },
+            // Debug States
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "Debug States",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
                 console.log(thread);
                 console.log(auth);
                 console.log(user);
-              },
-            },
-            {
-              icon: { fontIconName: "video", weight: "400" },
-              label: "Jitsi Meet Beta",
-              isNavigation: true, //If set to true, the button will not be set to a "loading" state
-              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-              doFunction: (data) => {
-                // Get user name to point to Web Current Messages
-                const name = user.userObject["name"];
-                // Get current thread ID
-                const threadId = thread.currentId;
-                //
-                const url =
-                  "https://property.inc/members/" +
-                  name +
-                  "/bp-messages/#/conversation/" +
-                  threadId +
-                  "/?actions=bp-audio-call";
 
-                console.log("URL TO OPEN: ", url);
-                return Linking.openURL("https://property.inc?testbbapp=1");
+                navigation.navigate("newmessage");
               },
             },
-            {
-              icon: { fontIconName: "video", weight: "400" },
-              label: "App to IOS Safari",
-              isNavigation: true, //If set to true, the button will not be set to a "loading" state
-              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-              doFunction: (data) => {
-                // get the refreshToken
-                let refreshToken = auth.refreshToken;
-                let home = "https://property.inc/";
-                let url =
-                  home +
-                  "?bbapptest=" +
-                  refreshToken +
-                  "&id=" +
-                  user.userObject["id"];
-                  
-                // custom - jwt - login - bbapp;
-                navigation.navigate("customwebview", {
-                  url: url,
-                });
-
-                // return Linking.openURL(url);
-              },
-            },
-            {
-              icon: { fontIconName: "video", weight: "400" },
-              label: "Custom Login",
-              isNavigation: true, //If set to true, the button will not be set to a "loading" state
-              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-              doFunction: (data) => {
-                let refreshToken = auth.refreshToken;
-                let userID = user.userObject["id"];
-                return Linking.openURL(
-                  "https://property.inc/?custom-jwt-login-bbapp=1" +
-                    "&userID=" +
-                    userID +
-                    "&refreshToken=" +
-                    refreshToken
-                );
-              },
-            },
+            // {
+            //   icon: { fontIconName: "video", weight: "400" },
+            //   label: "Debug States",
+            //   isNavigation: true, //If set to true, the button will not be set to a "loading" state
+            //   useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+            //   doFunction: (data) => {
+            //     navigation.navigate("customwebsocket");
+            //   },
+            // },
           ],
         },
       ],
