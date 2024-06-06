@@ -17,7 +17,7 @@ import CookieManager from "@react-native-cookies/cookies";
 import { WebView } from "react-native-webview";
 
 import MessageWebsocketVersion from "./dev/custom/MessageWebsocketVersion";
-// import WebSocketExample from "./jeff/dev/screens/CustomWebsocketScreen";
+import WebSocketExample from "./jeff/dev/screens/CustomWebsocketScreen";
 
 import { Websocket } from "react-use-websocket";
 import RenderHtml from "react-native-render-html";
@@ -73,12 +73,12 @@ export const applyCustomCode = (externalCodeSetup) => {
     "All" // "Auth" | "noAuth" | "Main" | "All"
   );
 
-  // navigationApi.addNavigationRoute(
-  //   "customwebsocket",
-  //   "customwebsocket",
-  //   WebSocketExample,
-  //   "All" // "Auth" | "noAuth" | "Main" | "All"
-  // );
+  navigationApi.addNavigationRoute(
+    "customwebsocket",
+    "customwebsocket",
+    WebSocketExample,
+    "All" // "Auth" | "noAuth" | "Main" | "All"
+  );
 
   navigationApi.addNavigationRoute(
     "customwebview",
@@ -229,15 +229,15 @@ export const applyCustomCode = (externalCodeSetup) => {
                 navigation.navigate("newmessage");
               },
             },
-            // {
-            //   icon: { fontIconName: "video", weight: "400" },
-            //   label: "Debug States",
-            //   isNavigation: true, //If set to true, the button will not be set to a "loading" state
-            //   useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
-            //   doFunction: (data) => {
-            //     navigation.navigate("customwebsocket");
-            //   },
-            // },
+            {
+              icon: { fontIconName: "video", weight: "400" },
+              label: "Websocket",
+              isNavigation: true, //If set to true, the button will not be set to a "loading" state
+              useDispatch: false, //If this is not set, `doFunction` will be wrapped in a `dispatch` function which is used to call a redux function
+              doFunction: (data) => {
+                navigation.navigate("customwebsocket");
+              },
+            },
           ],
         },
       ],
