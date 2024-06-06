@@ -30,18 +30,20 @@ const WebSocketExample = () => {
     onOpen: () => {
       console.log("Connected to signaling server");
       //   sendMessage(JSON.stringify({ type: "register", username }));
-      // sendMessage("Hello server");
+      sendMessage("Hello server");
     },
     onMessage: (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Data : ", data);
+      console.log("event : ", event);
 
-      if (lastMessage !== null) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { id: Date.now(), message: lastMessage.data },
-        ]);
-      }
+      // const data = JSON.parse(event.data);
+      // console.log("Data : ", data);
+
+      // if (lastMessage !== null) {
+      //   setMessages((prevMessages) => [
+      //     ...prevMessages,
+      //     { id: Date.now(), message: lastMessage.data },
+      //   ]);
+      // }
 
       //   handleSignalingData(data);
       // Add new messages to the list when received
@@ -85,46 +87,88 @@ const WebSocketExample = () => {
     // setLocalStream(stream);
 
     try {
-      const pc = new RTCPeerConnection();
-
-      pc.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log("ICE CANDIDATE : ", event.candidate);
-
-          // sendMessage(
-          //   JSON.stringify({
-          //     type: "candidate",
-          //     candidate: event.candidate,
-          //     sender: username,
-          //     recipient,
-          //   })
-          // );
-        }
+      const configuration = {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" }, // Example STUN server
+        ],
       };
 
+      // Create the RTCPeerConnection
+      const peerConnection = new RTCPeerConnection(configuration);
+
+      peerConnection.addEventListener("connectionstatechange", (event) => {
+        console.log("STATE CHANGES!");
+        switch (peerConnection.connectionState) {
+          case "closed":
+            // You can handle the call being disconnected here.
+
+            break;
+        }
+      });
+
+      console.log("Peer : ", peerConnection);
+
+      // peerConnection.onicecandidate = (event) => {
+      //   if (event.candidate) {
+      //     console.log("ICE Candidate:", event.candidate);
+      //     // Handle the ICE candidate
+      //   } else {
+      //     console.log("All ICE candidates have been sent");
+      //   }
+      // };
+
+      // const pc = new RTCPeerConnection({
+      //   iceServers: [
+      //     { urls: "stun:172.104.112.109:2096" }, //3478
+      //     {
+      //       urls: "turn:172.104.112.109:2096",
+      //       username: "vinz1992",
+      //       credential: "12341234",
+      //     },
+      //   ],
+      // });
+
+      // console.log("PC : ", pc);
+
+      // // stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+      // pc.onicecandidate = (event) => {
+      //   console.log("Ice candidate event");
+      //   if (event.candidate) {
+      //     sendMessage(
+      //       JSON.stringify({
+      //         type: "candidate",
+      //         candidate: event.candidate,
+      //         sender: username,
+      //         recipient,
+      //       })
+      //     );
+
+      //     console.log("EVENT : ", event.candidate);
+      //   }
+      // };
+
       console.log("RTC PC created");
+      setPeerConnection(peerConnection);
     } catch (err) {
       console.log("Error", err);
     }
 
-    //   {
-    //   iceServers: [
-    //     { urls: "stun:webrtc.icodeph.com:2096" }, //3478
-    //     {
-    //       urls: "turn:webrtc.icodeph.com:2096",
-    //       username: "vinz1992",
-    //       credential: "12341234",
-    //     },
-    //   ],
-    // });
-
     // stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
     // pc.ontrack = (event) => {
-    //   console.log("Remote stream received:", event.streams[0]);
+    //   console.log("TRACK EVENT");
+    //   // console.log("Remote stream received:", event.streams[0]);
     // };
 
     // setPeerConnection(pc);
+  };
+
+  const createOffer = async () => {
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    console.log("OFFER : ", offer);
+    sendMessage(JSON.stringify({ ...offer, type: "offer" }));
   };
 
   //   const [inputValue, setInputValue] = useState("");
@@ -207,7 +251,8 @@ const WebSocketExample = () => {
         />
         <Button title="Send Message" onPress={handleSend} />
         <Button title="Test WEBRTC" onPress={initPeerConnection} />
-        <FlatList
+        <Button title="Create Offer" onPress={createOffer} />
+        {/* <FlatList
           data={messages}
           renderItem={({ item }) => (
             <Text
@@ -221,7 +266,7 @@ const WebSocketExample = () => {
             </Text>
           )}
           keyExtractor={(item) => item.id.toString()}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
