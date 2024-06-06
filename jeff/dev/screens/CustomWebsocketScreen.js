@@ -9,16 +9,28 @@ import {
 } from "react-native";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
+import {
+  RTCPeerConnection,
+  RTCIceCandidate,
+  RTCSessionDescription,
+  mediaDevices,
+} from "react-native-webrtc";
+
 const WebSocketExample = () => {
   const [socketUrl, setSocketUrl] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([]);
 
+  // WebRTC
+  const [peerConnection, setPeerConnection] = useState(null);
+  const [username, setUsername] = useState("");
+  const [recipient, setRecipient] = useState("");
+
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
     onOpen: () => {
       console.log("Connected to signaling server");
       //   sendMessage(JSON.stringify({ type: "register", username }));
-      sendMessage("Hello server");
+      // sendMessage("Hello server");
     },
     onMessage: (event) => {
       const data = JSON.parse(event.data);
@@ -63,6 +75,57 @@ const WebSocketExample = () => {
     [ReadyState.CLOSED]: "Closed",
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
+
+  // WebRTC
+  const initPeerConnection = async () => {
+    // const stream = await mediaDevices.getUserMedia({
+    //   audio: true,
+    //   video: true,
+    // });
+    // setLocalStream(stream);
+
+    try {
+      const pc = new RTCPeerConnection();
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          console.log("ICE CANDIDATE : ", event.candidate);
+
+          // sendMessage(
+          //   JSON.stringify({
+          //     type: "candidate",
+          //     candidate: event.candidate,
+          //     sender: username,
+          //     recipient,
+          //   })
+          // );
+        }
+      };
+
+      console.log("RTC PC created");
+    } catch (err) {
+      console.log("Error", err);
+    }
+
+    //   {
+    //   iceServers: [
+    //     { urls: "stun:webrtc.icodeph.com:2096" }, //3478
+    //     {
+    //       urls: "turn:webrtc.icodeph.com:2096",
+    //       username: "vinz1992",
+    //       credential: "12341234",
+    //     },
+    //   ],
+    // });
+
+    // stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+    // pc.ontrack = (event) => {
+    //   console.log("Remote stream received:", event.streams[0]);
+    // };
+
+    // setPeerConnection(pc);
+  };
 
   //   const [inputValue, setInputValue] = useState("");
   //   const [messages, setMessages] = useState([]);
@@ -143,6 +206,7 @@ const WebSocketExample = () => {
           placeholder="Type your message"
         />
         <Button title="Send Message" onPress={handleSend} />
+        <Button title="Test WEBRTC" onPress={initPeerConnection} />
         <FlatList
           data={messages}
           renderItem={({ item }) => (
