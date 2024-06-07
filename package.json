@@ -23,7 +23,7 @@
     "react-use-websocket": "^4.8.1"
   },
   "nativeDependencies": {
-    "react-native-webrtc": "^124.0.0"
+    "react-native-webrtc": "^118.0.7"
   },
   "podDependencies": {
     "react-native-webrtc": "react-native-webrtc"

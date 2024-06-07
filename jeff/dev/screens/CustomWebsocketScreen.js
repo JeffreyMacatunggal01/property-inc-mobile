@@ -14,6 +14,7 @@ import {
   RTCIceCandidate,
   RTCSessionDescription,
   mediaDevices,
+  RTCView,
 } from "react-native-webrtc";
 
 const WebSocketExample = () => {
@@ -22,6 +23,7 @@ const WebSocketExample = () => {
   const [messages, setMessages] = useState([]);
 
   // WebRTC
+  const [stream, setStream] = useState(null);
   const [peerConnection, setPeerConnection] = useState(null);
   const [username, setUsername] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -79,7 +81,32 @@ const WebSocketExample = () => {
   }[readyState];
 
   // WebRTC
+
+  const start = async () => {
+    console.log("start");
+    if (!stream) {
+      try {
+        const s = await mediaDevices.getUserMedia({ video: true });
+        setStream(s);
+      } catch (e) {
+        console.error(e);
+      }
+    } else{
+      console.log("Stream error!")
+    }
+  };
+
+  const stop = () => {
+    console.log("stop");
+    if (stream) {
+      stream.release();
+      setStream(null);
+    }
+  };
+
   const initPeerConnection = async () => {
+
+    start();
     // const stream = await mediaDevices.getUserMedia({
     //   audio: true,
     //   video: true,
@@ -252,6 +279,9 @@ const WebSocketExample = () => {
         <Button title="Send Message" onPress={handleSend} />
         <Button title="Test WEBRTC" onPress={initPeerConnection} />
         <Button title="Create Offer" onPress={createOffer} />
+        <SafeAreaView>
+          {stream && <RTCView streamURL={stream.toURL()} />}
+        </SafeAreaView>
         {/* <FlatList
           data={messages}
           renderItem={({ item }) => (
