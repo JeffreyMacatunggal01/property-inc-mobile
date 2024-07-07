@@ -12,9 +12,39 @@ import { WebView } from "react-native-webview";
 import MessageWebsocketVersion from "./dev/custom/MessageWebsocketVersion";
 import WebSocketExample from "./jeff/dev/screens/CustomWebsocketScreen";
 import CustomMessageView from "./jeff/dev/views/CustomMessageView";
+
 import CustomView from "./jeff/dev/views/CustomView";
+
 import { Websocket } from "react-use-websocket";
 import RenderHtml from "react-native-render-html";
+
+// const CustomWebView = ({ route }) => {
+//   const { url } = route.params;
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, marginTop: 40, marginBottom: 40 }}>
+//       <WebView
+//         useWebkit
+//         originWhitelist={["*"]}
+//         onMessage={(event) => {}}
+//         ref={() => {}}
+//         // sharedCookiesEnabled={true}
+//         allowsBackForwardNavigationGestures={true}
+//         javaScriptEnabled={true}
+//         // thirdPartyCookiesEnabled={true}
+//         source={{
+//           uri: url,
+//           headers: {
+//             bbapp: "bbapp_view",
+//           },
+//         }}
+//         onLoad={(syntheticEvent) => {
+//           // setShowActivityIndicator(false);
+//         }}
+//       />
+//     </SafeAreaView>
+//   );
+// };
 
 // // Define a test persisten WebView
 const PersistentWebView = () => {
@@ -23,6 +53,8 @@ const PersistentWebView = () => {
   // Get app current user or accessToken
   // pass in url
   // on load let backend do the redirect to message screen
+
+
 
   // Customize WebView props as needed
   const webViewProps = {
@@ -36,6 +68,7 @@ const PersistentWebView = () => {
   );
 };
 
+
 export const applyCustomCode = (externalCodeSetup) => {
   // define constant
   const {
@@ -47,6 +80,24 @@ export const applyCustomCode = (externalCodeSetup) => {
     navigationApi,
   } = externalCodeSetup;
 
+  // ##########################################################################
+  // Register custom screens
+  // webview for bettermessages loading of page
+  // webview for jitsimeet call
+  // navigationApi.addNavigationRoute(
+  //   "newmessage",
+  //   "newmessage",
+  //   MessageWebsocketVersion,
+  //   "All" // "Auth" | "noAuth" | "Main" | "All"
+  // );
+
+  // navigationApi.addNavigationRoute(
+  //   "customwebsocket",
+  //   "customwebsocket",
+  //   WebSocketExample,
+  //   "All" // "Auth" | "noAuth" | "Main" | "All"
+  // );
+
   navigationApi.addNavigationRoute(
     "persistentview",
     "persistentview",
@@ -54,12 +105,20 @@ export const applyCustomCode = (externalCodeSetup) => {
     "All" // "Auth" | "noAuth" | "Main" | "All"
   );
 
+  // navigationApi.addNavigationRoute(
+  //   "persistwebview",
+  //   "persistwebview",
+  //   CustomMessageView,
+  //   "All" // "Auth" | "noAuth" | "Main" | "All"
+  // );
   // ##########################################################################
 
   // ##########################################################################
+
 
   // Uncomment this to override default BBApp Message Page/View/Screen
-  navigationApi.replaceScreenComponent("messages", CustomMessageView);
+  // navigationApi.replaceScreenComponent("messages", CustomMessageView);
+
 
   // ##########################################################################
   // extra permission calling
@@ -67,12 +126,9 @@ export const applyCustomCode = (externalCodeSetup) => {
   indexJsApi.addIndexJsFunction(async () => {
     // Try get all stored keys/data in device search for token
     const keys = await AsyncStorage.getAllKeys();
-    // console.log(JSON.stringify(keys));
-
+    console.log(JSON.stringify(keys));
     // Call App Permission Dialog while App is loading
     await PermissionHandler();
-
-    console.log("Init Done checking for updated version...");
   });
 
   // indexJsApi.addIndexJsFunction(() => {
@@ -120,7 +176,6 @@ export const applyCustomCode = (externalCodeSetup) => {
     const navigation = useNavigation();
     const route = useRoute();
     const newButton = {
-      // Define Message
       flow: [
         {
           check: () => true, //Return `true` to show the button
@@ -239,3 +294,20 @@ export const applyCustomCode = (externalCodeSetup) => {
     return [...buttonConfig, newButton];
   });
 };
+
+// export const applyCustomCode = (externalCodeSetup) => {
+//   const {
+//     messagesScreenApi,
+//     messagesSingleScreenApi,
+//     activitiesScreenApi,
+//     topicSingleApi,
+//     indexJsApi,
+//     navigationApi,
+//   } = externalCodeSetup;
+
+//   indexJsApi.addIndexJsFunction(() => {
+//     console.log("INIT APP ON INDEX JS");
+//     const auth = useSelector((state) => state.auth);
+//     console.log("AUTH IS : ", auth);
+//   });
+// };

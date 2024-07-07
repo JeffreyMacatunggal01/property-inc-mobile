@@ -69,9 +69,6 @@ const CustomSingleMessageScreen = (props) => {
       };
     }, [])
   );
-
-
-
   // make sure the make one instance of axios only
 
   let instance;

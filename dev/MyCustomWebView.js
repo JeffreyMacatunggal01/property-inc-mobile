@@ -103,7 +103,7 @@ const CustomWebView = ({ route }) => {
             // style={styles.webview}
             allowsBackForwardNavigationGestures={true}
             javaScriptEnabled
-            // injectedJavaScriptBeforeContentLoadedd={"document.cookie='myCookie=myValue';"}
+            // injectedJavaScriptBeforeContentLoaded={"document.cookie='myCookie=myValue';"}
             // injectedJavaScript={runFirst}
             // onLoad = show the web
             // onLoading = show a loading screen
