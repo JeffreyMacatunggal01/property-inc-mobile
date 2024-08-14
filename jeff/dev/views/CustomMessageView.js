@@ -200,6 +200,11 @@ const CustomMessageView = () => {
           source={{ uri: url }}
           style={styles.webview}
           ref={webViewRef}
+          scalesPageToFit
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+          javaScriptEnabled={true}
+          allowsProtectedMedia={true}
           // onLoadStart={onPageLoadStart}
           // onLoadEnd={onPageLoadFinish}
           injectedJavaScript={injectedJavaScript}
@@ -208,6 +213,15 @@ const CustomMessageView = () => {
     </SafeAreaView>
   );
 };
+
+// // allowsInlineMediaPlayback={true}
+// mediaPlaybackRequiresUserAction={false}
+// mediaCapturePermissionGrantType="grantIfSameHostElsePrompt"
+// // allowsProtectedMedia={true}
+// // allowsAirPlayForMediaPlayback={true}
+// // startInLoadingState
+// // scalesPageToFit
+// // javaScriptEnabled={true}
 
 const styles = StyleSheet.create({
   container: {
